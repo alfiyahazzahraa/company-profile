@@ -1,0 +1,72 @@
+/* =========================================================
+   base.css  —  DASAR (dipakai semua bagian halaman)
+   Isi: warna, reset, font, container, tombol, label kecil.
+   Kalau mau ganti warna / ukuran umum, ubahnya di file ini.
+   ========================================================= */
+
+/* ---------- 1. Variabel warna (ubah di sini saja) ---------- */
+.rr {
+    --bg: #f6f4ee;          /* krem latar halaman */
+    --surface: #fffdf9;     /* putih hangat untuk kartu */
+    --ink: #2b372f;         /* teks utama (hijau tua) */
+    --muted: #6b756d;       /* teks sekunder */
+    --line: #e2ded2;        /* garis tipis */
+    --sage: #8fa595;        /* aksen lembut */
+    --sage-soft: #e8eee9;   /* latar ikon */
+    --green: #52705b;       /* tombol utama */
+    --green-dark: #3d5546;  /* tombol saat hover */
+    --footer: #33453a;      /* latar footer */
+    --radius: 20px;
+    --shadow: 0 1px 2px rgba(43, 55, 47, .05),
+              0 24px 48px -24px rgba(43, 55, 47, .22);
+}
+
+/* ---------- 2. Reset ringan ----------
+   :where() membuat aturan ini "lemah" (spesifisitas nol), jadi class
+   lain seperti .rr-btn (teks putih) tidak tertimpa. */
+:where(.rr, .rr *, .rr *::before, .rr *::after) { box-sizing: border-box; }
+:where(.rr *) { margin: 0; padding: 0; }
+:where(.rr a) { color: inherit; text-decoration: none; }
+:where(.rr svg) { display: block; }
+
+/* ---------- 3. Body ---------- */
+.rr {
+    margin: 0;                          /* hapus margin 8px bawaan <body> */
+    font-family: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- 4. Container: membatasi lebar isi halaman ---------- */
+.rr-container { width: min(1180px, 100% - 48px); margin-inline: auto; }
+
+/* ---------- 5. Tombol (dipakai di header dan di form) ---------- */
+.rr-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    font: 500 .95rem 'DM Sans', sans-serif;
+    padding: 13px 26px; border-radius: 999px; border: 0; cursor: pointer;
+    background: var(--green); color: #fff;
+    transition: background .2s, transform .2s, box-shadow .2s;
+}
+.rr-btn:hover {
+    background: var(--green-dark); transform: translateY(-2px);
+    box-shadow: 0 10px 22px -10px rgba(61, 85, 70, .7);
+}
+.rr-btn:active { transform: translateY(0); }
+.rr-btn svg { transition: transform .2s; }
+.rr-btn:hover svg { transform: translateX(4px); }
+
+/* ---------- 6. Label kecil dengan garis ("LET'S TALK", "INFORMASI") ---------- */
+.rr-eyebrow {
+    display: inline-flex; align-items: center; gap: 14px;
+    font-size: .75rem; font-weight: 700; letter-spacing: .28em;
+    text-transform: uppercase; color: var(--green);
+}
+.rr-eyebrow::before { content: ''; width: 40px; height: 1px; background: var(--green); }
+
+/* ---------- 7. Hormati pengguna yang mematikan animasi ---------- */
+@media (prefers-reduced-motion: reduce) {
+    .rr * { transition: none !important; }
+}

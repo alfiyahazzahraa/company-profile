@@ -1,0 +1,74 @@
+/* =========================================================
+   header.css  —  BAGIAN ATAS HALAMAN
+   Isi: logo, menu navigasi, tombol hamburger (HP).
+   Bergantung pada variabel di base.css.
+   ========================================================= */
+
+/* ---------- 1. Bar header (menempel di atas saat scroll) ---------- */
+.rr-header {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(246, 244, 238, .88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+}
+.rr-header__inner {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 84px; position: relative;
+}
+
+/* ---------- 2. Logo ---------- */
+.rr-logo {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: 1.95rem; letter-spacing: -.02em; line-height: 1;
+}
+.rr-logo span { color: var(--sage); }
+
+/* ---------- 3. Menu navigasi ---------- */
+.rr-nav { display: flex; align-items: center; gap: 36px; }
+.rr-nav__link {
+    font-size: .95rem; color: var(--muted);
+    position: relative; padding: 6px 0; transition: color .2s;
+}
+.rr-nav__link:hover { color: var(--ink); }
+.rr-nav__link::after {                  /* garis bawah muncul saat hover */
+    content: ''; position: absolute; left: 0; bottom: 0;
+    width: 100%; height: 1px; background: var(--ink);
+    transform: scaleX(0); transform-origin: left; transition: transform .25s;
+}
+.rr-nav__link:hover::after { transform: scaleX(1); }
+
+/* ---------- 4. Tombol hamburger (disembunyikan di layar besar) ---------- */
+.rr-burger {
+    display: none; width: 44px; height: 44px; border-radius: 12px;
+    border: 1px solid var(--line); background: transparent; cursor: pointer;
+    align-items: center; justify-content: center; color: var(--ink);
+}
+
+/* ---------- 5. Layar HP: menu jadi panel yang turun ---------- */
+@media (max-width: 720px) {
+    .rr-burger { display: inline-flex; }
+    .rr-nav {
+        display: none; position: absolute; top: 84px; left: 0; right: 0;
+        flex-direction: column; align-items: stretch; gap: 4px;
+        background: var(--surface); border: 1px solid var(--line);
+        border-radius: 18px; padding: 14px; box-shadow: var(--shadow);
+    }
+    .rr-nav.is-open { display: flex; }      /* class ini ditambah oleh JavaScript */
+    .rr-nav__link { padding: 12px 14px; }
+    .rr-nav__link::after { display: none; }
+    .rr-nav .rr-btn { margin-top: 6px; }
+
+    /* Hover: tulisan/menu naik sedikit */
+    .rr-nav__link {
+    transition: transform .25s ease, color .25s ease;
+}
+
+    .rr-nav__link:hover {
+    transform: translateY(-4px);
+}
+
+    /* Efek tombol */
+.rr-header .rr-btn {
+    transition: transform .25s ease, box-shadow .25s ease;
+}
+}

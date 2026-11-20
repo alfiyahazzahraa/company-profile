@@ -1,0 +1,322 @@
+
+/* =========================================================
+   contact.css — HALAMAN KONTAK RUANGRONA
+========================================================= */
+
+/* HERO */
+.rr-hero {
+    padding: 90px 0 65px;
+    text-align: center;
+}
+
+.rr-hero .rr-eyebrow {
+    justify-content: center;
+}
+
+.rr-hero h1 {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: clamp(42px, 6vw, 72px);
+    line-height: 1.15;
+    font-weight: 400;
+    letter-spacing: -1px;
+    margin: 24px 0;
+    color: var(--ink);
+}
+
+.rr-hero h1 em {
+    color: var(--green);
+    font-weight: 400;
+}
+
+.rr-hero p {
+    max-width: 650px;
+    margin: 0 auto;
+    color: var(--muted);
+    font-size: 1.05rem;
+}
+
+
+/* GRID */
+.rr-grid {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: 32px;
+    align-items: stretch;
+    padding-bottom: 100px;
+}
+
+
+/* CONTACT INFORMATION */
+.rr-info {
+    background: var(--footer);
+    color: white;
+    padding: 45px;
+    border-radius: var(--radius);
+    position: relative;
+    overflow: hidden;
+}
+
+.rr-info::after {
+    content: '';
+    position: absolute;
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.08);
+    bottom: -130px;
+    right: -100px;
+}
+
+.rr-info .rr-eyebrow {
+    color: #c5d5c8;
+}
+
+.rr-info .rr-eyebrow::before {
+    background: #c5d5c8;
+}
+
+.rr-info h2 {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: 2.3rem;
+    line-height: 1.3;
+    font-weight: 400;
+    margin: 25px 0 15px;
+}
+
+.rr-info > p {
+    color: #d0dbd2;
+    font-size: .95rem;
+    margin-bottom: 35px;
+}
+
+
+/* CONTACT LIST */
+.rr-info__list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+.rr-info__item {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.rr-info__icon {
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,.09);
+    color: #dbe8dc;
+    border-radius: 15px;
+}
+
+.rr-info__label {
+    color: #b9c9bc;
+    font-size: .82rem;
+    margin-bottom: 4px;
+}
+
+.rr-info__value {
+    color: white;
+    font-size: .95rem;
+    overflow-wrap: anywhere;
+}
+
+.rr-info a.rr-info__value:hover {
+    color: #c5d5c8;
+}
+
+
+/* FORM CARD */
+.rr-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 45px;
+    box-shadow: var(--shadow);
+}
+
+.rr-card__kicker {
+    color: var(--green);
+    font-size: .75rem;
+    text-transform: uppercase;
+    letter-spacing: .2em;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.rr-card h3 {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: 2.2rem;
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 30px;
+}
+
+
+/* FORM LAYOUT */
+.rr-form {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.rr-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+.rr-field {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.rr-field label {
+    color: var(--ink);
+    font-size: .88rem;
+    font-weight: 600;
+}
+
+.rr-field input,
+.rr-field textarea {
+    width: 100%;
+    border: 1px solid var(--line);
+    background: #f9f8f4;
+    border-radius: 12px;
+    padding: 15px 16px;
+    color: var(--ink);
+    font-size: .95rem;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s, background .2s;
+}
+
+.rr-field input {
+    min-height: 52px;
+}
+
+.rr-field textarea {
+    min-height: 150px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+.rr-field input::placeholder,
+.rr-field textarea::placeholder {
+    color: #a1a69f;
+}
+
+.rr-field input:focus,
+.rr-field textarea:focus {
+    border-color: var(--sage);
+    background: white;
+    box-shadow: 0 0 0 4px rgba(143,165,149,.15);
+}
+
+
+/* SUBMIT BUTTON */
+.rr-form .rr-btn {
+    width: 100%;
+    min-height: 54px;
+    margin-top: 4px;
+}
+
+.rr-form .rr-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+
+/* NOTE */
+.rr-note {
+    color: var(--muted);
+    font-size: .8rem;
+    text-align: center;
+}
+
+
+/* DEMO ALERT */
+.rr-alert {
+    display: none;
+    background: var(--sage-soft);
+    border: 1px solid #cbd9ce;
+    color: var(--green-dark);
+    padding: 15px 18px;
+    border-radius: 12px;
+    font-size: .9rem;
+}
+
+.rr-alert.is-visible {
+    display: block;
+}
+
+
+/* RESPONSIVE TABLET */
+@media (max-width: 900px) {
+    .rr-grid {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+
+    .rr-info,
+    .rr-card {
+        padding: 35px;
+    }
+
+    .rr-info h2 {
+        font-size: 2rem;
+    }
+}
+
+
+/* RESPONSIVE HP */
+@media (max-width: 600px) {
+    .rr-hero {
+        padding: 65px 0 40px;
+    }
+
+    .rr-hero h1 {
+        font-size: 42px;
+    }
+
+    .rr-hero p {
+        font-size: .95rem;
+    }
+
+    .rr-grid {
+        padding-bottom: 65px;
+    }
+
+    .rr-info,
+    .rr-card {
+        padding: 25px;
+        border-radius: 16px;
+    }
+
+    .rr-info h2,
+    .rr-card h3 {
+        font-size: 1.8rem;
+    }
+
+    .rr-row {
+        grid-template-columns: 1fr;
+        gap: 22px;
+    }
+
+    .rr-info__item {
+        gap: 14px;
+    }
+
+    .rr-info__icon {
+        width: 46px;
+        height: 46px;
+        min-width: 46px;
+    }
+}

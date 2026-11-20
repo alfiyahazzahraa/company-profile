@@ -1,0 +1,23 @@
+/* =========================================================
+   footer.css  —  BAGIAN BAWAH HALAMAN
+   Isi: footer hijau tua dengan copyright.
+   Bergantung pada variabel di base.css.
+   ========================================================= */
+
+.rr-footer {
+    background: var(--footer); color: #dfe7e0;
+    padding: 38px 0; font-size: .9rem;
+}
+.rr-footer__inner {
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 12px; flex-wrap: wrap;
+}
+.rr-footer em {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: 1.05rem; color: var(--sage);
+}
+
+/* Layar HP: teks footer ditumpuk dan rata tengah */
+@media (max-width: 720px) {
+    .rr-footer__inner { flex-direction: column; text-align: center; }
+}
