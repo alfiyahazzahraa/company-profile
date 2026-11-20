@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\LoginController;
+use App\Http\Controllers\Admin\DashboardController;
 
 // Homepage
 Route::get('/', [HomeController::class, 'index']);
@@ -28,9 +29,14 @@ Route::post('/admin/login', [LoginController::class, 'store'])
 Route::post('/admin/logout', [LoginController::class, 'logout'])
     ->name('admin.logout');
 
-// Admin Inbox (dilindungi login)
-
+// Admin Dashboard dan Inbox (dilindungi login)
 Route::middleware(['auth', 'admin'])->group(function () {
+
+    // Dashboard Admin
+    Route::get('/admin/dashboard', [DashboardController::class, 'index'])
+        ->name('admin.dashboard');
+
+    // Inbox Admin
     Route::get('/admin/messages', [ContactMessageController::class, 'index'])
         ->name('admin.messages.index');
 

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -23,6 +24,16 @@
             padding: 25px 40px;
         }
 
+        .header-content {
+            max-width: 1100px;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
         header h1 {
             margin: 0;
             font-size: 26px;
@@ -30,6 +41,27 @@
 
         header p {
             margin: 8px 0 0;
+        }
+
+        .header-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .nav-button {
+            display: inline-block;
+            padding: 11px 16px;
+            background: white;
+            color: #536b58;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .nav-button:hover {
+            background: #e9eee7;
         }
 
         main {
@@ -149,7 +181,6 @@
             font-weight: bold;
         }
 
-        /* Pencarian */
         .search-form {
             display: flex;
             flex-wrap: wrap;
@@ -193,6 +224,10 @@
                 padding: 25px 20px;
             }
 
+            .header-content {
+                align-items: flex-start;
+            }
+
             .summary {
                 grid-template-columns: 1fr;
             }
@@ -211,17 +246,23 @@
 <body>
 
     <header>
-        <h1>RuangRona Admin</h1>
-        <p>Inbox Pesan Pelanggan</p>
+        <div class="header-content">
+            <div>
+                <h1>RuangRona Admin</h1>
+                <p>Inbox Pesan Pelanggan</p>
+            </div>
+
+            <nav class="header-nav">
+                <a href="{{ route('admin.dashboard') }}" class="nav-button">
+                    Dashboard
+                </a>
+            </nav>
+        </div>
     </header>
 
     <main>
 
         <h2>Daftar Pesan</h2>
-
-        <p style="color:red; font-weight:bold;">
-            TEST UPDATE TERBARU
-        </p>
 
         <p>Total pesan masuk: {{ $messages->count() }}</p>
 
