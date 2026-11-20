@@ -1,0 +1,2 @@
+Ini adalah latihan Git branch.
+Saya sedang belajar commit dan merge.
