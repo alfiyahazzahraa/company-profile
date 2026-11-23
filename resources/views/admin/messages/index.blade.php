@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -11,17 +10,31 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --forest: #31463A;
+            --forest-soft: #526747;
+            --sage: #687D59;
+            --sage-light: #E6EBDD;
+            --cream: #FAF9F5;
+            --cream-bg: #F3F5EF;
+            --border: #DCE3D5;
+            --text: #31463A;
+            --muted: #7B8875;
+            --terracotta: #A66B5E;
+        }
+
         body {
             margin: 0;
             font-family: Arial, sans-serif;
-            background: #f3f1e9;
-            color: #38483d;
+            background: var(--cream-bg);
+            color: var(--text);
         }
 
         header {
-            background: #536b58;
-            color: white;
+            background: var(--forest);
+            color: var(--cream);
             padding: 25px 40px;
+            border-bottom: 1px solid rgba(255,255,255,.08);
         }
 
         .header-content {
@@ -41,6 +54,7 @@
 
         header p {
             margin: 8px 0 0;
+            color: #D7E0D3;
         }
 
         .header-nav {
@@ -52,16 +66,17 @@
         .nav-button {
             display: inline-block;
             padding: 11px 16px;
-            background: white;
-            color: #536b58;
+            background: var(--cream);
+            color: var(--forest);
             text-decoration: none;
-            border-radius: 8px;
+            border-radius: 30px;
             font-size: 14px;
             font-weight: bold;
+            transition: .2s;
         }
 
         .nav-button:hover {
-            background: #e9eee7;
+            background: var(--sage-light);
         }
 
         main {
@@ -70,22 +85,35 @@
             padding: 0 20px;
         }
 
+        main h2 {
+            color: var(--forest);
+            font-size: 25px;
+            margin-bottom: 10px;
+        }
+
+        main > p {
+            color: var(--muted);
+            margin-bottom: 25px;
+        }
+
         .message {
-            background: white;
+            background: var(--cream);
             padding: 25px;
             margin-bottom: 20px;
-            border-radius: 12px;
-            box-shadow: 0 3px 12px rgba(0,0,0,.04);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 14px rgba(49,70,58,.04);
         }
 
         .message h3 {
             margin-top: 0;
-            color: #536b58;
+            color: var(--forest);
+            font-size: 19px;
         }
 
         .meta {
             font-size: 14px;
-            color: #777;
+            color: var(--muted);
             margin-bottom: 20px;
             line-height: 1.8;
         }
@@ -93,43 +121,57 @@
         .content {
             white-space: pre-wrap;
             overflow-wrap: anywhere;
-            line-height: 1.7;
+            line-height: 1.8;
+            color: #465747;
         }
 
         .status {
             margin: 20px 0 12px;
             font-weight: bold;
+            color: var(--forest);
         }
 
         select, button {
-            padding: 10px 14px;
-            border-radius: 7px;
-            border: 1px solid #cbd2c7;
+            padding: 11px 15px;
+            border-radius: 9px;
+            border: 1px solid var(--border);
             font-size: 14px;
+            font-family: inherit;
         }
 
         select {
-            background: white;
-            color: #38483d;
+            background: #F1F4EC;
+            color: var(--forest);
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--sage);
+            box-shadow: 0 0 0 3px rgba(104,125,89,.12);
         }
 
         button {
-            background: #536b58;
-            color: white;
+            background: var(--sage);
+            color: var(--cream);
             cursor: pointer;
-            border: none;
+            border: 1px solid var(--sage);
+            font-weight: bold;
+            transition: .2s;
         }
 
         button:hover {
-            background: #405444;
+            background: var(--forest-soft);
+            border-color: var(--forest-soft);
         }
 
         .delete-button {
-            background: #a34444;
+            background: var(--terracotta);
+            border-color: var(--terracotta);
         }
 
         .delete-button:hover {
-            background: #873636;
+            background: #89574C;
+            border-color: #89574C;
         }
 
         .status-form, .delete-form {
@@ -144,16 +186,20 @@
 
         .alert {
             padding: 15px;
-            background: #e0eadf;
-            border-radius: 8px;
+            background: #E6EBDD;
+            color: var(--forest);
+            border: 1px solid #D3DFCB;
+            border-radius: 10px;
             margin-bottom: 20px;
         }
 
         .empty {
-            background: white;
+            background: var(--cream);
             padding: 30px;
-            border-radius: 12px;
+            border-radius: 16px;
             text-align: center;
+            border: 1px solid var(--border);
+            color: var(--muted);
         }
 
         .summary {
@@ -164,21 +210,24 @@
         }
 
         .summary-card {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 3px 12px rgba(0,0,0,.04);
+            background: var(--cream);
+            padding: 22px;
+            border-radius: 15px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 14px rgba(49,70,58,.035);
         }
 
         .summary-card h3 {
-            margin: 0 0 10px;
-            font-size: 15px;
+            margin: 0 0 12px;
+            font-size: 14px;
+            color: var(--muted);
         }
 
         .summary-card p {
             margin: 0;
-            font-size: 28px;
+            font-size: 29px;
             font-weight: bold;
+            color: var(--forest);
         }
 
         .search-form {
@@ -191,10 +240,16 @@
         .search-form input {
             flex: 1;
             min-width: 200px;
-            padding: 12px;
-            border: 1px solid #cbd2c7;
-            border-radius: 8px;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            background: var(--cream);
+            color: var(--forest);
+            border-radius: 9px;
             font-size: 14px;
+        }
+
+        .search-form input::placeholder {
+            color: #9AA594;
         }
 
         .reset-button {
@@ -202,20 +257,23 @@
             align-items: center;
             justify-content: center;
             padding: 12px 20px;
-            background: #e5e5e5;
-            color: #38483d;
-            border-radius: 8px;
+            background: var(--sage-light);
+            color: var(--forest);
+            border: 1px solid var(--border);
+            border-radius: 9px;
             text-decoration: none;
             font-size: 14px;
+            font-weight: bold;
+            transition: .2s;
         }
 
         .reset-button:hover {
-            background: #d5d5d5;
+            background: #D6E1CF;
         }
 
         footer {
             text-align: center;
-            color: #718074;
+            color: var(--muted);
             padding: 30px;
         }
 
@@ -238,6 +296,16 @@
 
             .message {
                 padding: 20px;
+            }
+
+            .status-form select,
+            .status-form button {
+                width: 100%;
+            }
+
+            .search-form button,
+            .search-form .reset-button {
+                width: 100%;
             }
         }
     </style>

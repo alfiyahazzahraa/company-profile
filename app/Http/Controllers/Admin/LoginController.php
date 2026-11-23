@@ -21,10 +21,10 @@ class LoginController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-
-            return redirect()->route('admin.messages.index');
-        }
+               $request->session()->regenerate();
+               
+               return redirect()->route('admin.dashboard');
+            }
 
         return back()->withErrors([
             'email' => 'Email atau password salah.',
