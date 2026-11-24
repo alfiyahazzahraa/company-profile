@@ -26,13 +26,14 @@
         </a>
 
         <nav>
-            <a href="#beranda">Beranda</a>
-            <a href="#tentang">Tentang</a>
-            <a href="#layanan">Layanan</a>
-
-            <a href="{{ route('contact') }}" class="nav-contact">
+             <a href="#beranda">Beranda</a>
+             <a href="#tentang">Tentang</a>
+             <a href="#layanan">Layanan</a>
+             <a href="{{ url('/berita-wordpress') }}">Berita</a>
+             
+             <a href="{{ route('contact') }}" class="nav-contact">
                 Hubungi Kami
-            </a>
+             </a>
         </nav>
     </header>
 

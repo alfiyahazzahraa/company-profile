@@ -18,12 +18,16 @@ class Setting extends Model
         'maps_embed',
         'meta_title',
         'meta_description',
+        'latitude',
+        'longitude',
     ];
 
     protected function casts(): array
     {
         return [
             'social_media' => 'array',
+            'latitude' => 'decimal:7',
+            'longitude' => 'decimal:7',
         ];
     }
 }

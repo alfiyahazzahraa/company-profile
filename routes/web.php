@@ -2,6 +2,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Admin\ContactMessageController;
@@ -9,9 +10,20 @@ use App\Http\Controllers\Admin\LoginController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\ServiceController;
+use App\Http\Controllers\Admin\PortfolioController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\Admin\ClientController;
+use App\Http\Controllers\Admin\PageController;
+use App\Http\Controllers\Admin\SliderController;
+use App\Http\Controllers\Admin\TeamMemberController;
+use App\Http\Controllers\Admin\PostController;
+
 
 // Homepage User
 Route::get('/', [HomeController::class, 'index']);
+
 
 // Kontak
 Route::get('/kontak', [ContactController::class, 'index'])
@@ -20,6 +32,7 @@ Route::get('/kontak', [ContactController::class, 'index'])
 Route::post('/kontak', [ContactController::class, 'store'])
     ->middleware('throttle:5,1')
     ->name('contact.store');
+
 
 // Login Admin
 Route::get('/admin/login', [LoginController::class, 'index'])
@@ -32,45 +45,136 @@ Route::post('/admin/login', [LoginController::class, 'store'])
 Route::post('/admin/logout', [LoginController::class, 'logout'])
     ->name('admin.logout');
 
-// Admin Dashboard, Inbox, Settings, dan Profile
-Route::middleware(['auth', 'admin'])->group(function () {
 
-    // Dashboard - alamat /admin
-    Route::get('/admin', function () {
-        return redirect()->route('admin.dashboard');
+// ADMIN
+Route::middleware(['auth', 'admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+
+        // Dashboard
+        Route::get('/', function () {
+            return redirect()->route('admin.dashboard');
+        });
+
+        Route::get('/dashboard', [DashboardController::class, 'index'])
+            ->name('dashboard');
+
+        //Halaman 
+        Route::resource('pages', PageController::class)
+            ->except(['show']);
+
+        //Sliders
+        Route::resource('sliders', SliderController::class)
+            ->except(['show']);
+
+        //Team
+        Route::resource('team', TeamMemberController::class)
+            ->except(['show']);
+
+        // Services CRUD
+        Route::resource('services', ServiceController::class)
+            ->except(['show']);
+
+
+        // Portfolio CRUD
+        Route::resource('portfolios', PortfolioController::class)
+            ->except(['show']);
+
+
+        // Categories CRUD
+        Route::resource('categories', CategoryController::class)
+            ->except(['show']);
+
+        // Posts CRUD
+        Route::resource('posts', PostController::class)
+            ->except(['show']);
+
+        // Testimonials CRUD
+        Route::resource('testimonials', TestimonialController::class)
+            ->except(['show']);
+
+        // Client CRUD
+        Route::resource('clients', ClientController::class)
+            ->except(['show']);
+
+        // Inbox
+        Route::get('/messages', [ContactMessageController::class, 'index'])
+            ->name('messages.index');
+
+        Route::patch('/messages/{message}', [ContactMessageController::class, 'update'])
+            ->name('messages.update');
+
+        Route::delete('/messages/{message}', [ContactMessageController::class, 'destroy'])
+            ->name('messages.destroy');
+
+
+        // Settings
+        Route::get('/settings', [SettingController::class, 'edit'])
+            ->name('settings.edit');
+
+        Route::patch('/settings', [SettingController::class, 'update'])
+            ->name('settings.update');
+
+
+        // Profile
+        Route::get('/profile', [ProfileController::class, 'edit'])
+            ->name('profile.edit');
+
+        Route::patch('/profile', [ProfileController::class, 'update'])
+            ->name('profile.update');
+
+        Route::delete('/profile', [ProfileController::class, 'destroy'])
+            ->name('profile.destroy');
+
     });
 
-    // Dashboard utama
-    Route::get('/admin/dashboard', [DashboardController::class, 'index'])
-        ->name('admin.dashboard');
 
-    // Inbox
-    Route::get('/admin/messages', [ContactMessageController::class, 'index'])
-        ->name('admin.messages.index');
+// Tes integrasi WordPress Headless CMS
+Route::get('/wordpress-api-test', function () {
+    $response = Http::get('http://localhost/wordpress-cms/wp-json/wp/v2/posts');
 
-    Route::patch('/admin/messages/{message}', [ContactMessageController::class, 'update'])
-        ->name('admin.messages.update');
-
-    Route::delete('/admin/messages/{message}', [ContactMessageController::class, 'destroy'])
-        ->name('admin.messages.destroy');
-
-    // Settings
-    Route::get('/admin/settings', [SettingController::class, 'edit'])
-        ->name('admin.settings.edit');
-
-    Route::patch('/admin/settings', [SettingController::class, 'update'])
-        ->name('admin.settings.update');
-
-    // Profile
-    Route::get('/profile', [ProfileController::class, 'edit'])
-        ->name('profile.edit');
-
-    Route::patch('/profile', [ProfileController::class, 'update'])
-        ->name('profile.update');
-
-    Route::delete('/profile', [ProfileController::class, 'destroy'])
-        ->name('profile.destroy');
+    return $response->json();
 });
+
+
+// Halaman berita dari WordPress
+Route::get('/berita-wordpress', function () {
+    $response = Http::get(
+        'http://localhost/wordpress-cms/wp-json/wp/v2/posts?_embed'
+    );
+
+    $posts = $response->successful()
+        ? $response->json()
+        : [];
+
+    return view('wordpress-news', compact('posts'));
+});
+
+
+// Detail berita dari WordPress
+Route::get('/berita-wordpress/{slug}', function ($slug) {
+    $response = Http::get(
+        'http://localhost/wordpress-cms/wp-json/wp/v2/posts',
+        [
+            'slug' => $slug,
+            '_embed' => true,
+        ]
+    );
+
+    $posts = $response->successful()
+        ? $response->json()
+        : [];
+
+    $post = $posts[0] ?? null;
+
+    if (!$post) {
+        abort(404);
+    }
+
+    return view('wordpress-detail', compact('post'));
+});
+
 
 // Breeze Auth Routes
 require __DIR__.'/auth.php';

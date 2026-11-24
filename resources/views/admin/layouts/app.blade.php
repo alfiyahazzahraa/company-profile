@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -43,6 +42,7 @@
             font-family: inherit;
         }
 
+        /* WRAPPER */
         .admin-wrapper {
             display: flex;
             min-height: 100vh;
@@ -359,7 +359,7 @@
 
 <div class="admin-wrapper">
 
-    <!-- SIDEBAR -->
+    {{-- SIDEBAR --}}
     <aside class="sidebar">
 
         <div class="sidebar-brand">
@@ -371,56 +371,113 @@
 
         <ul class="sidebar-nav">
             <li>
-                <a href="/admin">Dashboard</a>
+                <a href="{{ url('/admin/dashboard') }}"
+                   class="{{ request()->is('admin/dashboard') || request()->is('admin') ? 'active' : '' }}">
+                    Dashboard
+                </a>
             </li>
         </ul>
 
         <div class="nav-label">Konten Website</div>
 
         <ul class="sidebar-nav">
-            <li><a href="#">Halaman</a></li>
-            <li><a href="#">Slider</a></li>
-            <li><a href="#">Team</a></li>
-            <li><a href="#">Services</a></li>
-            <li><a href="#">Portfolio</a></li>
-            <li><a href="#">Categories</a></li>
-            <li><a href="#">Posts / Berita</a></li>
-            <li><a href="#">Testimonials</a></li>
-            <li><a href="#">Clients</a></li>
+            <li>
+                <a href="{{ route('admin.pages.index') }}"
+                    class="{{ request()->is('admin/pages*') ? 'active' : '' }}">
+                    Halaman
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ route('admin.sliders.index') }}"
+                    class="{{ request()->is('admin/sliders*') ? 'active' : '' }}">
+                    Slider
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ route('admin.team.index') }}"
+                    class="{{ request()->is('admin/team*') ? 'active' : '' }}">
+                    Team
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ route('admin.services.index') }}">
+                    Services
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ route('admin.portfolios.index') }}">
+                    Portfolio
+                </a>
+            </li>
+            
+            <li>
+                <a href="{{ route('admin.categories.index') }}"
+                  class="sidebar-link">
+                  <span>Categories</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ route('admin.posts.index') }}"
+                    class="{{ request()->is('admin/posts*') ? 'active' : '' }}">
+                    Berita
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ route('admin.testimonials.index') }}"
+                     class="{{ request()->is('admin/testimonials*') ? 'active' : '' }}">
+                        Testimonials
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ route('admin.clients.index') }}"
+                    class="{{ request()->is('admin/clients*') ? 'active' : '' }}">
+                    Clients
+                </a>
+            </li>
+
         </ul>
 
         <div class="nav-label">Administrasi</div>
 
         <ul class="sidebar-nav">
             <li>
-                <a href="/admin/messages">Pesan Masuk</a>
+                <a href="{{ url('/admin/messages') }}">
+                    Pesan Masuk
+                </a>
             </li>
 
             <li>
-                <a href="/admin/settings">Pengaturan Website</a>
+                <a href="{{ url('/admin/settings') }}">
+                    Pengaturan Website
+                </a>
             </li>
 
             <li>
-                <a href="/profile">Profil Admin</a>
+                <a href="{{ url('/profile') }}">
+                    Profil Admin
+                </a>
             </li>
         </ul>
 
         <div class="sidebar-bottom">
-            <ul class="sidebar-nav">
-                <li>
-                    <form action="{{ route('logout') }}" method="POST">
-                        @csrf
-                        <button type="submit">
-                            Logout
-                        </button>
-                    </form>
-                </li>
-            </ul>
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit">
+                    Logout
+                </button>
+            </form>
         </div>
 
     </aside>
 
-    <!-- MAIN AREA -->
+    {{-- MAIN AREA --}}
     <div class="main-area">
 
         <header class="topbar">

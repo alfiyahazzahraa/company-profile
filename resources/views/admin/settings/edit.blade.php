@@ -331,14 +331,37 @@
         </div>
 
         <div class="settings-card">
-            <h2>Google Maps</h2>
-            <p class="description">Lokasi perusahaan pada peta.</p>
+            <h2>Lokasi Perusahaan</h2>
+            <p class="description">
+                Masukkan koordinat lokasi perusahaan.
+                Koordinat dapat ditemukan melalui Google Maps.
+            </p>
 
             <div class="field">
-                <label>Embed Maps</label>
-                <textarea name="maps_embed" rows="4"
-                    placeholder="Kode embed Google Maps">{{ old('maps_embed', $setting?->maps_embed) }}</textarea>
+                <label for="latitude">Latitude</label>
+                <input
+                    type="text"
+                    name="latitude"
+                    id="latitude"
+                    value="{{ old('latitude', $setting?->latitude) }}"
+                    placeholder="-7.7970680"
+                >
             </div>
+
+            <div class="field">
+                <label for="longitude">Longitude</label>
+                <input
+                    type="text"
+                    name="longitude"
+                    id="longitude"
+                    value="{{ old('longitude', $setting?->longitude) }}"
+                    placeholder="110.3705290"
+                >
+            </div>
+
+            <p class="help">
+                Latitude adalah koordinat lintang dan Longitude adalah koordinat bujur.
+            </p>
         </div>
 
         <div class="settings-card">

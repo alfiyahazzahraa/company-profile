@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use App\Http\Requests\UpdateSettingRequest;
-use Illuminate\Support\Facades\Storage;
 
 class SettingController extends Controller
 {
