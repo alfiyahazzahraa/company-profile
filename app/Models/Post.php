@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Post extends Model
 {
     protected $fillable = [
+        'wp_post_id',
         'category_id',
         'user_id',
         'title',

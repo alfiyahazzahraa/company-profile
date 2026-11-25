@@ -7,6 +7,7 @@ use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Models\Category;
 use App\Models\Post;
+use App\Services\WordPressService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -19,7 +20,7 @@ class PostController extends Controller
             ->when($request->search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('title', 'like', "%{$search}%")
-                        ->orWhere('slug', 'like', "%{$search}%");
+                      ->orWhere('slug', 'like', "%{$search}%");
                 });
             })
             ->latest()
@@ -36,36 +37,94 @@ class PostController extends Controller
         return view('admin.posts.create', compact('categories'));
     }
 
-    public function store(StorePostRequest $request)
+    public function store(StorePostRequest $request, WordPressService $wordpress)
     {
         $data = $request->validated();
-
-        // Mengambil ID admin yang sedang login
         $data['user_id'] = auth()->id();
 
-        // Membuat slug otomatis dan memastikan slug unik
         $baseSlug = Str::slug($data['slug'] ?: $data['title']);
         $data['slug'] = $this->generateUniqueSlug($baseSlug);
 
-        // Upload thumbnail
         if ($request->hasFile('thumbnail')) {
-            $data['thumbnail'] = $request->file('thumbnail')
-                ->store('posts', 'public');
+            $data['thumbnail'] = $request->file('thumbnail')->store('posts', 'public');
+
+            // Upload thumbnail ke WordPress Media Library
+            $mediaResponse = $wordpress->uploadMedia(
+                $data['thumbnail'],
+                basename($data['thumbnail'])
+            );
+
+            if (!$mediaResponse->successful()) {
+                Storage::disk('public')->delete($data['thumbnail']);
+
+                return back()->withInput()->with(
+                    'error',
+                    'Gagal mengupload gambar ke WordPress.'
+                );
+            }
+
+            $mediaId = $mediaResponse->json('id');
+
+            if (!$mediaId) {
+                Storage::disk('public')->delete($data['thumbnail']);
+
+                return back()->withInput()->with(
+                    'error',
+                    'WordPress tidak mengembalikan ID gambar.'
+                );
+            }
         }
 
-        // Mengatur tanggal publikasi berdasarkan status
         if ($data['status'] === 'published') {
             $data['published_at'] = $data['published_at'] ?? now();
         } else {
             $data['published_at'] = null;
         }
 
-        // Menyimpan berita
+        $wpData = [
+            'title'   => $data['title'],
+            'slug'    => $data['slug'],
+            'content' => $data['content'],
+            'status'  => $data['status'] === 'published' ? 'publish' : 'draft',
+        ];
+
+        // Jadikan gambar sebagai Featured Image WordPress
+        if (!empty($mediaId)) {
+            $wpData['featured_media'] = $mediaId;
+        }
+
+        $response = $wordpress->createPost($wpData);
+
+        if (!$response->successful()) {
+            if (!empty($data['thumbnail'])) {
+                Storage::disk('public')->delete($data['thumbnail']);
+            }
+
+            return back()->withInput()->with(
+                'error',
+                'Gagal mengirim berita ke WordPress.'
+            );
+        }
+
+        $wpPostId = $response->json('id');
+
+        if (!$wpPostId) {
+            if (!empty($data['thumbnail'])) {
+                Storage::disk('public')->delete($data['thumbnail']);
+            }
+
+            return back()->withInput()->with(
+                'error',
+                'WordPress tidak mengembalikan ID berita.'
+            );
+        }
+
+        $data['wp_post_id'] = $wpPostId;
+
         Post::create($data);
 
-        return redirect()
-            ->route('admin.posts.index')
-            ->with('success', 'Berita berhasil ditambahkan.');
+        return redirect()->route('admin.posts.index')
+            ->with('success', 'Berita berhasil ditambahkan ke WordPress.');
     }
 
     public function edit(Post $post)
@@ -75,25 +134,49 @@ class PostController extends Controller
         return view('admin.posts.edit', compact('post', 'categories'));
     }
 
-    public function update(UpdatePostRequest $request, Post $post)
-    {
+    public function update(
+        UpdatePostRequest $request,
+        Post $post,
+        WordPressService $wordpress
+    ) {
         $data = $request->validated();
 
-        // Membuat slug unik, kecuali slug milik berita ini sendiri
         $baseSlug = Str::slug($data['slug'] ?: $data['title']);
         $data['slug'] = $this->generateUniqueSlug($baseSlug, $post->id);
 
-        // Upload thumbnail baru jika tersedia
+        $newThumbnail = null;
+        $mediaId = null;
+
+        // Upload gambar baru jika user memilih gambar
         if ($request->hasFile('thumbnail')) {
-            if ($post->thumbnail) {
-                Storage::disk('public')->delete($post->thumbnail);
+            $newThumbnail = $request->file('thumbnail')->store('posts', 'public');
+
+            $mediaResponse = $wordpress->uploadMedia(
+                $newThumbnail,
+                basename($newThumbnail)
+            );
+
+            if (!$mediaResponse->successful()) {
+                Storage::disk('public')->delete($newThumbnail);
+
+                return back()->withInput()->with(
+                    'error',
+                    'Gagal mengupload gambar baru ke WordPress.'
+                );
             }
 
-            $data['thumbnail'] = $request->file('thumbnail')
-                ->store('posts', 'public');
+            $mediaId = $mediaResponse->json('id');
+
+            if (!$mediaId) {
+                Storage::disk('public')->delete($newThumbnail);
+
+                return back()->withInput()->with(
+                    'error',
+                    'WordPress tidak mengembalikan ID gambar.'
+                );
+            }
         }
 
-        // Mengatur tanggal publikasi
         if ($data['status'] === 'published') {
             $data['published_at'] = $data['published_at']
                 ?? $post->published_at
@@ -102,43 +185,84 @@ class PostController extends Controller
             $data['published_at'] = null;
         }
 
-        // Memperbarui berita
+        $wpData = [
+            'title'   => $data['title'],
+            'slug'    => $data['slug'],
+            'content' => $data['content'],
+            'status'  => $data['status'] === 'published' ? 'publish' : 'draft',
+        ];
+
+        // Update Featured Image hanya jika ada gambar baru
+        if ($mediaId) {
+            $wpData['featured_media'] = $mediaId;
+        }
+
+        if (!$post->wp_post_id) {
+            $response = $wordpress->createPost($wpData);
+        } else {
+            $response = $wordpress->updatePost($post->wp_post_id, $wpData);
+        }
+
+        if (!$response->successful()) {
+            if ($newThumbnail) {
+                Storage::disk('public')->delete($newThumbnail);
+            }
+
+            return back()->withInput()->with(
+                'error',
+                'Gagal memperbarui berita WordPress.'
+            );
+        }
+
+        if (!$post->wp_post_id) {
+            $data['wp_post_id'] = $response->json('id');
+        }
+
+        // Ganti thumbnail lokal setelah update WordPress berhasil
+        if ($newThumbnail) {
+            if ($post->thumbnail) {
+                Storage::disk('public')->delete($post->thumbnail);
+            }
+
+            $data['thumbnail'] = $newThumbnail;
+        }
+
         $post->update($data);
 
-        return redirect()
-            ->route('admin.posts.index')
+        return redirect()->route('admin.posts.index')
             ->with('success', 'Berita berhasil diperbarui.');
     }
 
-    public function destroy(Post $post)
+    public function destroy(Post $post, WordPressService $wordpress)
     {
-        // Menghapus thumbnail jika ada
+        if ($post->wp_post_id) {
+            $response = $wordpress->deletePost($post->wp_post_id);
+
+            if (!$response->successful()) {
+                return redirect()->route('admin.posts.index')
+                    ->with('error', 'Gagal menghapus berita dari WordPress.');
+            }
+        }
+
         if ($post->thumbnail) {
             Storage::disk('public')->delete($post->thumbnail);
         }
 
-        // Menghapus data berita
         $post->delete();
 
-        return redirect()
-            ->route('admin.posts.index')
+        return redirect()->route('admin.posts.index')
             ->with('success', 'Berita berhasil dihapus.');
     }
 
-    // Membuat slug unik
     private function generateUniqueSlug(string $slug, ?int $ignoreId = null): string
     {
         $slug = $slug ?: 'artikel';
-
         $originalSlug = $slug;
         $counter = 1;
 
         while (
             Post::where('slug', $slug)
-                ->when(
-                    $ignoreId,
-                    fn ($query) => $query->where('id', '!=', $ignoreId)
-                )
+                ->when($ignoreId, fn ($query) => $query->where('id', '!=', $ignoreId))
                 ->exists()
         ) {
             $slug = $originalSlug . '-' . $counter;

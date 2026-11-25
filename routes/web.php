@@ -175,6 +175,30 @@ Route::get('/berita-wordpress/{slug}', function ($slug) {
     return view('wordpress-detail', compact('post'));
 });
 
+Route::get('/wordpress-auth-test', function () {
+    $response = \Illuminate\Support\Facades\Http::withBasicAuth(
+        config('wordpress.username'),
+        config('wordpress.password')
+    )->get(config('wordpress.api_url') . '/posts');
+
+    return response()->json([
+        'status' => $response->status(),
+        'connected' => $response->successful(),
+        'message' => $response->successful()
+            ? 'Laravel berhasil terhubung ke WordPress!'
+            : 'Koneksi gagal.',
+    ]);
+});
+
+Route::get('/wordpress-service-test', function (\App\Services\WordPressService $wordpress) {
+    $response = $wordpress->getPosts();
+
+    return response()->json([
+        'status' => $response->status(),
+        'connected' => $response->successful(),
+        'posts' => $response->json(),
+    ]);
+});
 
 // Breeze Auth Routes
 require __DIR__.'/auth.php';
